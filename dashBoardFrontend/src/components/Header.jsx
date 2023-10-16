@@ -5,15 +5,21 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import DarkModeToggle from "./DarkModeToggle.jsx";
+import DropDown from "./DropDown.jsx";
 
-export default function Header() {
+export default function Header({ selectedItem, handleSelect }) {
     const expand = false; // Set your desired expand value here
 
     return (
         <Navbar expand={expand} className="bg-body-tertiary mb-3">
             <Container fluid>
-                <Navbar.Brand href="#">Navbar Offcanvas</Navbar.Brand>
-                <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
+                <Navbar.Brand href="#">DASHBOARD</Navbar.Brand>
+                <DropDown selectedItem={selectedItem} handleSelect={handleSelect} />
+
+                    <DarkModeToggle  />
+
+                    <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
                 <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}

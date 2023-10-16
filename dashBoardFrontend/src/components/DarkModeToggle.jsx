@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
 
 function DarkModeToggle() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -8,10 +9,16 @@ function DarkModeToggle() {
         document.documentElement.setAttribute('data-bs-theme', isDarkMode ? 'light' : 'dark');
     };
 
+    const buttonStyle = {
+        borderRadius: '15%', // Make the button round
+        border: isDarkMode ? '1px solid white' : '1px solid black',
+    };
+
+
     return (
-        <button onClick={toggleDarkMode}>
-            {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        </button>
+        <Button variant={isDarkMode ? 'light' : 'dark'} onClick={toggleDarkMode} style={buttonStyle}>
+            {isDarkMode ? 'Light' : 'Dark'}
+        </Button>
     );
 }
 
