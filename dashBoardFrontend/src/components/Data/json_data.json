@@ -376,7 +376,7 @@
             "relevance": 4,
             "pestle": "Industries",
             "source": "Resilience",
-            "title": "By 2040, the world could need to replace over 4 times the current crude oil output of Saudi Arabia (or more than 40 mbd).",
+            "title ": "By 2040, the world could need to replace over 4 times the current crude oil output of Saudi Arabia (or more than 40 mbd).",
             "likelihood": 2
         },
         {

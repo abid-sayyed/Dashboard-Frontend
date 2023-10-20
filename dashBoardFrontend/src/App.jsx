@@ -3,21 +3,43 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {useEffect, useState} from "react";
 import Header from './components/Header.jsx';
 import DarkModeToggle from './components/DarkModeToggle.jsx';
-import BarChart from './components/BarChart.jsx';
+import BarChart from './components/Chat/BarChart.jsx';
 import {UserData} from "./components/Data/Data.jsx";
 import { Container, Row, Col } from 'react-bootstrap';
-import LineChart from "./components/LineChart.jsx";
+import LineChart from "./components/Chat/LineChart.jsx";
 import Chart from 'chart.js/auto';
-import PieChart from "./components/Data/PieChart.jsx";
+import PieChart from "./components/Chat/PieChart.jsx";
 import {Radar} from "react-chartjs-2";
-import RadarChart from "./components/RadarChart.jsx";
+import RadarChart from "./components/Chat/RadarChart.jsx";
+import BarTestChart from "./components/Chat/BarTest.jsx";
 
 function App() {
+
     const [chartData, setChartData] = useState([]);
     const [selectedItem, setSelectedItem] = useState("sector");
-    const [averageData, setAverageData] = useState({});
+    const [intensityData, setIntensityData] = useState({});
+    const [likelihoodData, setLikelihoodData] = useState({});
+    const [relevanceData, setRelevanceData] = useState({});
 
-    console.log(selectedItem)
+    const [end_year, setEnd_year] = useState({});
+    const [country, setCountry] = useState({});
+    const [topic, setTopic] = useState({});
+    const [region, setRegion] = useState({});
+
+
+/*
+    console.log("intensity" ,intensityData);
+    console.log("likelihood" ,likelihoodData);
+    console.log("relevance" ,relevanceData);
+*/
+
+    console.log("yearsData" ,end_year);
+    console.log("countryData" ,country);
+    console.log("topicData" ,topic);
+    console.log("regionData" ,region);
+
+
+
 
     const handleSelect = (eventKey) => {
         setSelectedItem(eventKey);
@@ -26,8 +48,6 @@ function App() {
     const handleDropDownSelect = (eventKey) => {
         handleSelect(eventKey);
     };
-
-
 
     useEffect(() => {
         const fetchDataFromBackend = async () => {
@@ -43,49 +63,93 @@ function App() {
         fetchDataFromBackend();
     }, []);
 
+    const calculateAverage = (attrName) => {
+        const sumMap = {};
+        const countMap = {};
 
-// Calculate the sum and count for each unique key
-    // ... (other state variables and functions)
+        chartData.forEach(item => {
+            const city = item[selectedItem];
+            const attrValue = parseInt(item[attrName]);
+            if (city !== "" && city !== null && !isNaN(attrValue) && attrValue !== "" && attrValue !== null) {
+                sumMap[city] = (sumMap[city] || 0) + attrValue;
+                countMap[city] = (countMap[city] || 0) + 1;
+            }
+        });
+
+        const averageMap = {};
+        for (const city in sumMap) {
+            if (countMap[city] > 0) {
+                const sum = sumMap[city];
+                const count = countMap[city];
+                const average = sum / count;
+                averageMap[city] = average;
+            }
+        }
+
+        if (attrName === "intensity") {
+            setIntensityData(averageMap);
+        } else if (attrName === "likelihood") {
+            setLikelihoodData(averageMap);
+        } else if (attrName === "relevance") {
+            setRelevanceData(averageMap);
+        }
+    };
+
+
+
+    // Create an object to store the data grouped by year
+// Create an object to store the data grouped by year
+    const calculateFrequency = (attrName) => {
+        const yearData = {};
+
+// Process the JSON data and group it by year
+        chartData.forEach(entry => {
+            const year = entry[attrName];
+            const sector = entry[selectedItem]
+
+            if (year && sector) {
+                if (!yearData[year]) {
+                    yearData[year] = {};
+                }
+                // Check if the sector is not null and not undefined, then increment its count; otherwise, set it to 1.
+                yearData[year][sector] = (yearData[year][sector] || 0) + 1;
+            }
+        });
+
+        if (attrName === "end_year") {
+            setEnd_year(yearData);
+        } else if (attrName === "country") {
+            setCountry(yearData);
+        } else if (attrName === "topic") {
+            setTopic(yearData);
+        }else if (attrName === "region") {
+            setRegion(yearData);
+        }
+
+
+/*
+        console.log(yearData);
+*/
+    };
+
+
 
     useEffect(() => {
-        // Define the function to calculate the average
-        const calculateAverage = () => {
+        // Calculate the averages for intensity, likelihood, and relevance separately
+        calculateAverage("intensity");
+        calculateAverage("likelihood");
+        calculateAverage("relevance");
 
-            const sumMap = {};
-            const countMap = {};
+        calculateFrequency('end_year')
+        calculateFrequency('country')
+        calculateFrequency('topic')
+        calculateFrequency('region')
 
-            chartData.forEach(item => {
-                const city = item[selectedItem];
-                const intensity = parseInt(item.intensity);
-                if (city !== "" && city !== null && !isNaN(intensity) && intensity !== "" && intensity !== null) {
-                    sumMap[city] = (sumMap[city] || 0) + intensity;
-                    countMap[city] = (countMap[city] || 0) + 1;
-                    console.log("from selected item working")
-                }
-            });
 
-            const averageMap = {};
-            for (const city in sumMap) {
-                if (countMap[city] > 0) { // Check if there's at least one valid value
-                    const sum = sumMap[city];
-                    const count = countMap[city];
-                    const average = sum / count;
-                    averageMap[city] = average;
-                }
-            }
+    }, [chartData, selectedItem]);
 
-            // Store the average data in the state
-            setAverageData(averageMap);
 
-            // You can do something with the average data, like rendering it in your component
-            console.log("abid Average Intensity:", averageMap);
-        };
 
-        // Call the calculateAverage function when chartData changes
-        calculateAverage();
-    }, [chartData,selectedItem]);
-
-    console.log(typeof averageData)
 
 
     return (
@@ -94,18 +158,21 @@ function App() {
             <Container>
                 <Row>
                     <Col>
-                        <BarChart chartData={averageData} />
+                        <BarChart chartData={intensityData} />
                     </Col>
                     <Col>
-                        <LineChart chartData={averageData} />
+                        <BarTestChart chartData={likelihoodData} />
+                    </Col>
+                    <Col>
+                        <LineChart chartData={likelihoodData} />
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <PieChart chartData={averageData} />
+                        <PieChart chartData={relevanceData} />
                     </Col>
                     <Col>
-                        <RadarChart chartData={averageData} />
+                        <RadarChart chartData={relevanceData} />
                     </Col>
                 </Row>
             </Container>
