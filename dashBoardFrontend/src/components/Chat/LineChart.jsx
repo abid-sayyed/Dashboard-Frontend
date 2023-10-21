@@ -8,7 +8,7 @@ export const options = {
             text: 'Topic - line Chart' ,
         },
     },
-    responsive: true,
+    responsive: true, // This is what makes the chart responsive
 
 };
 function LineChart({ chartData }) {
