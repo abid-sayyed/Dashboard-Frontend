@@ -1,7 +1,15 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
 import Chart from 'chart.js/auto';
+export const options = {
+    plugins: {
+        title: {
+            display: true,
+            text: 'Likelihood - Pie Chart',
+        },
+    },
 
+};
 
 function PieChart({ chartData }) {
 
@@ -37,7 +45,7 @@ function PieChart({ chartData }) {
         ],
     };
 
-    return <Pie data={userData} />;
+    return <Pie data={userData} options={options} />;
 }
 
 export default PieChart;

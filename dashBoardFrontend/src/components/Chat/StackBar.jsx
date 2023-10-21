@@ -1,18 +1,19 @@
 import React from "react";
-import {Bar, Line} from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import Chart from 'chart.js/auto';
 export const options = {
     plugins: {
         title: {
             display: true,
-            text: 'Topic - line Chart' ,
+            text: 'End_Years - Stack Bar Chart' ,
         },
     },
     responsive: true,
 
 };
-function LineChart({ chartData }) {
+function StackBar({ chartData , selectedDataType}) {
 
+    options.plugins.title.text = selectedDataType;
     // Use Object.entries().map to iterate through the object and get the labels
     const labels = Object.keys(chartData);
     const dataArrays = Object.values(chartData);
@@ -48,7 +49,7 @@ function LineChart({ chartData }) {
 
 
 
-    return <Line data={userData} options={options} />;
+    return <Bar data={userData} options={options} />;
 }
 
-export default LineChart;
+export default StackBar;

@@ -7,6 +7,7 @@ function BarTestChart({ chartData }) {
     const intensityValues = Object.entries(chartData).map(([key, value]) => value);
 
 
+
     const userData = {
         labels, // Use the labels obtained from the object
         datasets: [

@@ -1,20 +1,19 @@
 import React from "react";
-import {Pie, Radar} from "react-chartjs-2";
+import {Bar, Line} from "react-chartjs-2";
 import Chart from 'chart.js/auto';
 
 export const options = {
     plugins: {
         title: {
             display: true,
-            text: 'Relevance - Radar Chart',
+            text: 'Topics - Line Chart',
         },
     },
     responsive: true,
 
 };
 
-
-function RadarChart({ chartData }) {
+function LineChartTest({ chartData }) {
 
     const labels = Object.entries(chartData).map(([key, value]) => key);
     const intensityValues = Object.entries(chartData).map(([key, value]) => value);
@@ -24,17 +23,16 @@ function RadarChart({ chartData }) {
         labels,
         datasets: [
             {
-                label: 'Relevance',
+                label: "Intensity",
                 data: intensityValues,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
             },
         ],
     };
 
-    return <Radar data={userData} options={options} />;
+    return <Line data={userData} />;
 }
 
-export default RadarChart;
+export default LineChartTest;

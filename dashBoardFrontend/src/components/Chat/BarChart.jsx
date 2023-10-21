@@ -1,5 +1,18 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import chart from 'chart.js/auto';
+import { Chart,  ArcElement, Tooltip, Legend } from "chart.js";
+
+export const options = {
+    plugins: {
+        title: {
+            display: true,
+            text: 'Intensity - Bar Chart',
+        },
+    },
+    responsive: true,
+
+};
 
 function BarChart({ chartData }) {
     // Use Object.entries().map to iterate through the object and get the labels
@@ -34,9 +47,13 @@ function BarChart({ chartData }) {
                 borderWidth: 1
             },
         ],
+
+
     };
 
-    return <Bar data={userData} />;
+
+
+    return <Bar data={userData} options={options} />;
 }
 
 export default BarChart;

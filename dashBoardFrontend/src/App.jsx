@@ -6,12 +6,14 @@ import DarkModeToggle from './components/DarkModeToggle.jsx';
 import BarChart from './components/Chat/BarChart.jsx';
 import {UserData} from "./components/Data/Data.jsx";
 import { Container, Row, Col } from 'react-bootstrap';
-import LineChart from "./components/Chat/LineChart.jsx";
 import Chart from 'chart.js/auto';
 import PieChart from "./components/Chat/PieChart.jsx";
-import {Radar} from "react-chartjs-2";
 import RadarChart from "./components/Chat/RadarChart.jsx";
-import BarTestChart from "./components/Chat/BarTest.jsx";
+import StackBar from "./components/Chat/StackBar.jsx";
+import Button from "react-bootstrap/Button";
+import BubbleChart from "./components/Chat/Bubblechart.jsx";
+import {Bubble} from "react-chartjs-2";
+import LineChart from "./components/Chat/LineChart.jsx";
 
 function App() {
 
@@ -21,22 +23,16 @@ function App() {
     const [likelihoodData, setLikelihoodData] = useState({});
     const [relevanceData, setRelevanceData] = useState({});
 
+    const [selectedDataType, setSelectedDataType] = useState("end_year"); // Set an initial default value
+    const [startYear, setStartYear] = useState({});
     const [end_year, setEnd_year] = useState({});
-    const [country, setCountry] = useState({});
-    const [topic, setTopic] = useState({});
+
+    const [selectedLocationType, setSelectedLocationType] = useState("country"); // Set an initial default value
+    const [countryData, setCountry] = useState({});
     const [region, setRegion] = useState({});
 
 
-/*
-    console.log("intensity" ,intensityData);
-    console.log("likelihood" ,likelihoodData);
-    console.log("relevance" ,relevanceData);
-*/
-
-    console.log("yearsData" ,end_year);
-    console.log("countryData" ,country);
-    console.log("topicData" ,topic);
-    console.log("regionData" ,region);
+    const [topicData, setTopic] = useState({});
 
 
 
@@ -116,9 +112,18 @@ function App() {
             }
         });
 
+        // Sort the keys in each object of yearData in alphabetical order
+        for (const year in yearData) {
+            yearData[year] = Object.fromEntries(
+                Object.entries(yearData[year]).sort((a, b) => a[0].localeCompare(b[0]))
+            );
+        }
+
         if (attrName === "end_year") {
             setEnd_year(yearData);
-        } else if (attrName === "country") {
+        } else if (attrName === "start_year") {
+            setStartYear(yearData);
+        }else if (attrName === "country") {
             setCountry(yearData);
         } else if (attrName === "topic") {
             setTopic(yearData);
@@ -126,10 +131,6 @@ function App() {
             setRegion(yearData);
         }
 
-
-/*
-        console.log(yearData);
-*/
     };
 
 
@@ -141,39 +142,54 @@ function App() {
         calculateAverage("relevance");
 
         calculateFrequency('end_year')
+        calculateFrequency('start_year')
         calculateFrequency('country')
         calculateFrequency('topic')
         calculateFrequency('region')
+
 
 
     }, [chartData, selectedItem]);
 
 
 
-
-
     return (
         <>
             <Header selectedItem={selectedItem} handleSelect={handleDropDownSelect}/>
-            <Container>
+            <Container >
                 <Row>
-                    <Col>
-                        <BarChart chartData={intensityData} />
+                    <Col className ="border border-success p-2 mb-2"  style={{ marginRight: '5px' }}>
+                        <BarChart chartData={intensityData}  />
                     </Col>
-                    <Col>
-                        <BarTestChart chartData={likelihoodData} />
-                    </Col>
-                    <Col>
-                        <LineChart chartData={likelihoodData} />
+                    <Col className ="border border-success p-2 mb-2" style={{ marginRight: '5px' }} >
+                        <PieChart chartData={likelihoodData} />
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
-                        <PieChart chartData={relevanceData} />
+                    <Col className ="border border-success p-2 mb-2"  style={{ marginRight: '5px' }}>
+                        <Button variant= "outline-secondary" style={{ marginRight: '10px' }} onClick={() => setSelectedDataType("start_year")}>Start Year</Button>
+                        <Button variant= "outline-secondary"  onClick={() => setSelectedDataType("end_year")}>End Year</Button>
+                        <StackBar chartData={selectedDataType === "start_year" ? startYear : end_year} selectedDataType={selectedDataType} />
+
                     </Col>
-                    <Col>
+                </Row>
+                <Row>
+                    <Col className ="border border-success p-2 mb-2"  style={{ marginRight: '5px' }}>
+                        <Button variant= "outline-secondary" style={{ marginRight: '10px' }} onClick={() => setSelectedLocationType("country")}>country</Button>
+                        <Button variant= "outline-secondary"   onClick={() => setSelectedLocationType("region")}>region</Button>
+                        <BubbleChart chartData={selectedLocationType === "country" ? countryData : region} setSelectedLocationType={selectedLocationType} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className ="border border-success p-2 mb-2"  style={{ marginRight: '5px' }}>
+                        <LineChart chartData={topicData} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className ="border border-success p-2 mb-2"  style={{ marginRight: '5px' }}>
                         <RadarChart chartData={relevanceData} />
                     </Col>
+
                 </Row>
             </Container>
         </>

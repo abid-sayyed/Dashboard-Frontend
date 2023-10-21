@@ -1,25 +1,38 @@
 import React from "react";
-import {Bar, Line} from "react-chartjs-2";
+import {Line, Bubble} from "react-chartjs-2";
 import Chart from 'chart.js/auto';
-export const options = {
+
+
+const options = {
     plugins: {
         title: {
             display: true,
-            text: 'Topic - line Chart' ,
+            text: 'End_Years - Stack Bar Chart' ,
         },
     },
     responsive: true,
-
+    scales: {
+        x: {
+            type: 'category',
+            title: {
+                display: true,
+                text: 'Categories',
+            },
+        },
+    },
 };
-function LineChart({ chartData }) {
+
+
+
+function BubbleChart({ chartData , setSelectedLocationType}) {
+
+    options.plugins.title.text = setSelectedLocationType;
 
     // Use Object.entries().map to iterate through the object and get the labels
     const labels = Object.keys(chartData);
     const dataArrays = Object.values(chartData);
 
-
     const uniqueKeysSet = new Set();
-
 // Iterate through the data and collect unique keys
     dataArrays.forEach((entry) => {
         Object.keys(entry).forEach((key) => {
@@ -31,24 +44,22 @@ function LineChart({ chartData }) {
     const uniqueKeys = [...uniqueKeysSet].sort();
 
 
-
-
     const userData = {
-        labels, // Use the labels obtained from the object
         datasets: uniqueKeys.map((key, index) => ({
             label: key,
-            data: dataArrays.map((entry) => {
-                return entry[key] !== undefined ? entry[key] : "null"; // null so it won't take space in between.
-            }),
-            skipNull: true,
-            stack: 'stack', // This is the key to creating a stacked bar chart
+            data : dataArrays.map((entry) => ({
+                x: labels[index],
+                y: entry[key] !== undefined ? entry[key] : 'null',
+                r: entry[key] !== undefined ? entry[key] : 'null',
+                type: 'category',
+
+            })),
 
         })),
     };
 
 
-
-    return <Line data={userData} options={options} />;
+    return <Bubble data={userData} options={options} />;
 }
 
-export default LineChart;
+export default BubbleChart;
