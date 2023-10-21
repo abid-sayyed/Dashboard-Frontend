@@ -46,9 +46,9 @@ function App() {
     };
 
     useEffect(() => {
-        const fetchDataFromBackend = async () => {
+        const fetchDataFromBackend = async (url) => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/api");
+                const response = await fetch(url);
                 const data = await response.json();
                 setChartData(data);
             } catch (error) {
@@ -56,7 +56,10 @@ function App() {
             }
         };
 
-        fetchDataFromBackend();
+/*
+        fetchDataFromBackend("http://127.0.0.1:8000/api"); // URL 1
+*/
+        fetchDataFromBackend("https://abidwork.pythonanywhere.com/api");  // URL 2
     }, []);
 
     const calculateAverage = (attrName) => {
